@@ -152,6 +152,9 @@ public class MineResetLite extends JavaPlugin implements Listener {
   }
 
   public void onDisable() {
+    if (saveTaskId != -1) {
+      save();
+    }
     getServer().getScheduler().cancelTask(resetTaskId);
     getServer().getScheduler().cancelTask(saveTaskId);
     HandlerList.unregisterAll((Plugin) this);
@@ -212,14 +215,16 @@ public class MineResetLite extends JavaPlugin implements Listener {
     if (saveTaskId != -1) {
       // Cancel old task
       scheduler.cancelTask(saveTaskId);
+      saveTaskId = -1;
     }
 
     // Schedule save
     final MineResetLite plugin = this;
 
-    scheduler.scheduleSyncDelayedTask(this, new Runnable() {
+    saveTaskId = scheduler.scheduleSyncDelayedTask(this, new Runnable() {
       public void run() {
         plugin.save();
+        saveTaskId = -1;
       }
     }, 60 * 20L);
   }
