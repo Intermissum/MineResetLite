@@ -46,6 +46,8 @@ public class Mine implements ConfigurationSerializable {
   private int tpX = 0;
   private int tpY = -1;
   private int tpZ = 0;
+  private float tpYaw;
+  private float tpPitch;
   private long blocksLeft;
   private AtomicBoolean resettng;
 
@@ -140,6 +142,8 @@ public class Mine implements ConfigurationSerializable {
       tpX = (Integer) me.get("tpX");
       tpY = (Integer) me.get("tpY");
       tpZ = (Integer) me.get("tpZ");
+      tpYaw = Float.parseFloat(me.getOrDefault("tpYaw", "0").toString());
+      tpPitch = Float.parseFloat(me.getOrDefault("tpPitch", "0").toString());
     }
 
     this.threshold = Bukkit.getPluginManager().getPlugin("MineResetLite").getConfig()
@@ -213,6 +217,8 @@ public class Mine implements ConfigurationSerializable {
     me.put("tpX", tpX);
     me.put("tpY", tpY);
     me.put("tpZ", tpZ);
+    me.put("tpYaw", tpYaw);
+    me.put("tpPitch", tpPitch);
     me.put("blocksLeft", this.blocksLeft);
     return me;
   }
@@ -351,13 +357,15 @@ public class Mine implements ConfigurationSerializable {
   }
 
   public Location getTpPos() {
-    return new Location(getWorld(), tpX, tpY, tpZ);
+    return new Location(getWorld(), tpX, tpY, tpZ, tpYaw, tpPitch);
   }
 
   public void setTpPos(Location l) {
     tpX = l.getBlockX();
     tpY = l.getBlockY();
     tpZ = l.getBlockZ();
+    tpYaw = l.getYaw();
+    tpPitch = l.getPitch();
   }
 
   public boolean isInside(Player p) {
